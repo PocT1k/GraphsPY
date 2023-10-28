@@ -75,11 +75,4 @@ class Graph:
                 if self.MD[i][j] != self.MD[j][i]:
                     return True
         return False
-    def negative_edges(self):
-        for i in range(self.NumV):
-            for j in range(self.NumV):
-                if self.MD[i][j] < 0:
-                    return True
-        return False
-
 pass
