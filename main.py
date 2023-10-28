@@ -2,7 +2,8 @@ import sys
 from gr import *
 from ut import *
 
-#-e list_of_edges_t1_001.txt
+
+#-e list_of_edges_t3_001.txt
 if __name__ == "__main__":
     input_string = input("Введите данные: ")
     array = input_string.split()
@@ -17,102 +18,73 @@ if __name__ == "__main__":
         sys.exit(1)
     fname = array[2]
     parametr = array[1]
-
     Graph1 = Graph(fname, parametr)
     N = Graph1.NumV
+
+    SMD = [0] * N
+    for i in range(N):
+        SMD[i] = [0] * N
+    for i in range(N):
+        for j in range(N):
+            if Graph1.MD[i][j] == 1:
+                SMD[i][j] = 1
+                SMD[j][i] = 1
     Vlist = []
     for i in range(N):
         l = []
         for j in range(N):
-            if Graph1.MD[i][j] != 0:
+            if SMD[i][j] != 0:
                 l.append(j)
         Vlist.append(l)
-    V0 = list(range(0, N))
-    V0.reverse()
-    if Graph1.is_directed() == False:
-        KompSV = BFS(Vlist, V0)
-        if "-o" in array:
-            fout = open('res.txt', 'w')
-            if len(KompSV) == 1:
-                fout.write("Graph is connected\n")
-            else:
-                fout.write("Graph is not connected\n")
-            fout.write("The number of components: ", len(KompSV))
-            fout.write(f"{KompSV}")
-        else:
-            if len(KompSV) == 1:
-                print("Graph is connected")
-            else:
-                print("Graph is not connected")
-            print("The number of components: ", len(KompSV))
-            print(KompSV)
-    else:
-        MDTR = [0] * N
-        MDST = [0] * N
-        for i in range(N):
-            MDTR[i] = [0] * N
-            MDST[i] = [0] * N
-        for i in range(N):
-            for j in range(N):
-                MDTR[i][j] = Graph1.MD[j][i]
-                if Graph1.MD[i][j] != 0:
-                    MDST[i][j] = 1
-                    MDST[j][i] = 1
-        Vlistreverse = []
-        Vlistsoot = []
-        for i in range(N):
-            r = []
-            l = []
-            for j in range(N):
-                if MDTR[i][j] != 0:
-                    r.append(j)
-                if MDST[i][j] != 0:
-                    l.append(j)
-            Vlistreverse.append(r)
-            Vlistsoot.append(l)
 
-        """Поиск компонент слабой связности"""
-        KompSV = BFS(Vlistsoot, V0)
-        if "-o" in array:
-            fout = open('res.txt', 'w')
-            if len(KompSV) == 1:
-                fout.write("Graph is weakly connected\n")
-            else:
-                fout.write("The number of weakly connected components: ")
-                fout.write(f"{len(KompSV)}")
-            fout.write("\nConnected components: ")
-            fout.write(f"{KompSV}")
-        else:
-            if len(KompSV) == 1:
-                print("Graph is weakly connected")
-            else:
-                print("The number of weakly connected components: ")
-                print(f"{len(KompSV)}")
-            print("Connected components: ")
-            print(f"{KompSV}")
+    visited = []
+    time = 0
+    V0list = list(range(0, N))
+    V0 = V0list[0]
+    tin = [0] * N
+    tup = [0] * N
+    Vobr = [-1] * N
+    cutpoints = set()
+    bridges = []
 
-        """Алгоритм Касараджу"""
-        KompSV, Metki = DFS(Vlist, V0)
-        i = 0
-        while True:
-            W = Metki.index(max(Metki))
-            Metki[W] = -1
-            V0[i] = W
-            i += 1
-            if i == N:
-                break
-        KompSV, Metki = DFS(Vlistreverse, V0)
-        if "-o" in array:
-            if len(KompSV) == 1:
-                fout.write("Graph is strongly connected\n")
+
+    def DFS(V0, p):
+        global time
+        visited.append(V0)
+        n = 0
+        time += 1
+        tin[V0] = time
+        tup[V0] = time
+        for Vertex in Vlist[V0]:
+            if Vertex == p:
+                continue
+            if Vertex not in visited:
+
+                DFS(Vertex, V0)
+                n += 1
+                tup[V0] = min(tup[V0], tup[Vertex])
+                if p != -1:
+                    if tup[Vertex] >= tin[V0]:
+                        cutpoints.add(V0 + 1)
+                if tup[Vertex] > tin[V0]:
+                    l = []
+                    l.append(V0 + 1)
+                    l.append(Vertex + 1)
+                    l.sort()
+                    bridges.append(l)
             else:
-                fout.write("\nThe number of strongly connected components: ")
-                fout.write(f"{len(KompSV)}")
-            fout.write("\nStrongly connected components: \n")
-            fout.write(f"{KompSV}")
-        else:
-            if len(KompSV) == 1:
-                print("Graph is strongly connected")
-            else:
-                print("The number of strongly connected components: ", len(KompSV))
-            print("Strongly connected components: ", KompSV)
+                tup[V0] = min(tup[V0], tin[Vertex])
+        if p == -1 and n >= 2:  # корень и шарнир
+            cutpoints.add(V0 + 1)
+
+
+    """DFS"""
+    for V in V0list:
+        if V not in visited:
+            DFS(V0, -1)
+    print("Bridges: ")
+    print(bridges)
+    print("Cutpoints: ")
+    for V in cutpoints:
+        print(V, end=' ')
+pass

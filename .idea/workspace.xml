@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0fa3e2c1-8166-4282-9d74-5c6153c74358" name="Changes" comment="st cm" />
+    <list default="true" id="0fa3e2c1-8166-4282-9d74-5c6153c74358" name="Changes" comment="2 cm">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gr.py" beforeDir="false" afterPath="$PROJECT_DIR$/gr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ut.py" beforeDir="false" afterPath="$PROJECT_DIR$/ut.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +98,21 @@
       <option name="project" value="LOCAL" />
       <updated>1698513862649</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="2 cm">
+      <created>1698514066866</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1698514066866</updated>
+    </task>
+    <task id="LOCAL-00006" summary="2 cm">
+      <created>1698514103058</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1698514103058</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -112,6 +131,7 @@
     <MESSAGE value="start add commit" />
     <MESSAGE value="add files" />
     <MESSAGE value="st cm" />
-    <option name="LAST_COMMIT_MESSAGE" value="st cm" />
+    <MESSAGE value="2 cm" />
+    <option name="LAST_COMMIT_MESSAGE" value="2 cm" />
   </component>
 </project>

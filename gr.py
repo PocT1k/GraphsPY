@@ -36,17 +36,11 @@ class Graph:
             Alist = []
             while (True):
                 line = fin.readline().split()
+                line = list(map(int, line))
                 if not line:
                     break
-
-                if line == ['-']:
-                    line = []
-                else:
-                    line = list(map(int, line))
-
                 Alist.append(line)
                 NumV += 1
-
             MD = [0] * NumV
             for i in range(NumV):
                 MD[i] = [0] * NumV
