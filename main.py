@@ -3,7 +3,7 @@ from gr import *
 from ut import *
 
 
-#-e list_of_edges_t6_001.txt -n 1 -t
+#-e list_of_edges_t7_001.txt
 if __name__ == "__main__":
     input_string = input("Введите данные: ")
     array = input_string.split()
@@ -33,22 +33,34 @@ if __name__ == "__main__":
                 l.append(Graph1.MD[i][j])
                 m.append(l)
         Vlist.append(m)
-    V0 = int(array[array.index("-n") + 1]) - 1
-    if "-d" in array:
-        if Graph1.negative_edges()==True:
-            print("Алгоритм Дейкстры не допускает рёбра с отрицательным весом!")
-            sys.exit(1)
-        else:
-            print("Graph does not contain edges with negative weight.")
-            print(f"Shortest paths lengths from {V0 + 1}: ")
-            print(Deikstra(V0, Vlist, N))
-    if "-b" in array:
-        print(BelmanFordMura(V0, Vlist, N))
-    if "-t" in array:
-        if BelmanFordMura(V0, Vlist, N) != "Graph contains negative weight cycle":
-            print("Graph does not contain edges with negative weight.")
-            print(f"Shortest paths lengths from {V0+1}: ")
-            print(Levit(V0, Vlist, N))
+
+    D = Djonson(Vlist, N)
+    if D == None:
+        if "-o" in array:
+            fout = open('res.txt', 'w')
+            fout.write("Graph contains negative weight cycle")
         else:
             print("Graph contains negative weight cycle")
+    else:
+        if "-o" in array:
+            fout = open('res.txt', 'w')
+            if Graph1.negative_edges()==True:
+                fout.write("Graph contains edges with negative weight.\n")
+            else:
+                fout.write("Graph doesn't contain edges with negative weight.\n")
+            fout.write("Shortest paths lengths:\n")
+            for i in range(len(D)):
+                for j in range(len(D[i])):
+                    if i != j and D[i][j] != MaxNumberV:
+                        fout.write(f"{i+1} - {j+1}: {D[i][j]}\n")
+        else:
+            if Graph1.negative_edges()==True:
+                print("Graph contains edges with negative weight.")
+            else:
+                print("Graph doesn't contain edges with negative weight.")
+            print("Shortest paths lengths:")
+            for i in range(len(D)):
+                for j in range(len(D[i])):
+                    if i != j and D[i][j] != MaxNumberV:
+                        print(f"{i+1} - {j+1}: {D[i][j]}")
 pass
