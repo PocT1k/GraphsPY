@@ -36,9 +36,12 @@ class Graph:
             Alist = []
             while (True):
                 line = fin.readline().split()
-                line = list(map(int, line))
                 if not line:
                     break
+                if line == ['-']:
+                    line = []
+                else:
+                    line = list(map(int, line))
                 Alist.append(line)
                 NumV += 1
             MD = [0] * NumV
@@ -72,3 +75,11 @@ class Graph:
                 if self.MD[i][j] != self.MD[j][i]:
                     return True
         return False
+    def negative_edges(self):
+        for i in range(self.NumV):
+            for j in range(self.NumV):
+                if self.MD[i][j] < 0:
+                    return True
+        return False
+
+pass
