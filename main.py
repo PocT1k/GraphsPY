@@ -1,112 +1,24 @@
-MaxNumberV = 1000
-
-
-class Graph: #основной класс Графа
-    def __init__(self, fname, par):
-        NumV = 0 #n
-        MD = [] #matrix
-        if par == "-e":
-            fin = open(fname, "r")
-            Elist = []
-            while True:
-                line = fin.readline()
-                line = list(map(int, line.split()))
-                if not line:
-                    break
-                if (len(line) == 2):
-                    line.append(1)
-                Elist.append(line)
-                if (line[0] > NumV or line[1] > NumV):
-                    NumV = max(line[0], line[1])
-            MD = [0] * NumV
-            for i in range(NumV):
-                MD[i] = [0] * NumV
-            for k in range(len(Elist)):
-                MD[(Elist[k][0]) - 1][(Elist[k][1]) - 1] = Elist[k][2];
-
-        if par == "-m":
-            fin = open(fname, "r")
-            while (True):
-                line = fin.readline().split()
-                line = list(map(int, line))
-                if not line:
-                    break
-                MD.append(line)
-                NumV += 1
-
-        if par == "-l":
-            fin = open(fname, "r")
-            Alist = []
-            while (True):
-                line = fin.readline().split()
-                line = list(map(int, line))
-                if not line:
-                    break
-                Alist.append(line)
-                NumV += 1
-            MD = [0] * NumV
-            for i in range(NumV):
-                MD[i] = [0] * NumV
-            for i in range(NumV):
-                for j in range(len(Alist[i])):
-                    MD[i][Alist[i][j] - 1] = 1
-
-        self.NumV = NumV
-        self.MD = MD
-
-    def weight(self, v1, v2):
-        return self.MD[v1 - 1][v2 - 1]
-
-    def is_edge(self, v1, v2):
-        if self.MD[v1 - 1][v2 - 1] != 0:
-            return True
-        else:
-            return False
-
-    def adjacency_matrix(self):
-        return self.MD
-
-    def adjacenty_list(self, v):
-        return self.MD[v - 1]
-
-    def is_directed(self):
-        for i in range(self.NumV):
-            for j in range(i + 1, self.NumV):
-                if self.MD[i][j] != self.MD[j][i]:
-                    return True
-        return False
-
-
-pass
-
-
-def spravka():
-    print("**********************************************************************")
-    print("Автор работы: студент М3О-325Бк-21 Новиков К.А. ")
-    print("Список ключей, доступных для ввода: ")
-    print("    -e - ключ для ввода графа из файла, содержащего список ребер ")
-    print("    -m - ключ для ввода графа из файла, содержащего матрицу смежности")
-    print("    -l - ключ для ввода графа из файла, содержащего список смежности ")
-    print("Важно! Можно указать не более одного ключа для ввода графа!")
-    print("    -o - ключ для вывода результатов работы программы в файл")
-    print("    -h - ключ для вывода справки")
-    print("**********************************************************************")
-
-
 import sys
+from gr import *
+from ut import *
+
 
 #python main.py -e list_of_edges_t1_001.txt
-
 if __name__ == "__main__":
-    if len(sys.argv) > 5 or len(sys.argv) == 1:
+    # Ввод строки с клавиатуры
+    input_string = input("Введите данные: ")
+    array = input_string.split()
+    array.insert(0, "1")
+
+    if len(array) > 5 or len(array) == 1:
         print(
             "Ошибка! Нужно указать один из параметров -e, -m, -l, параметр -o, для вывода в файл или параметр -h, для вывода справки ")
         sys.exit(1)
-    if "-h" in sys.argv:
+    if "-h" in array:
         spravka()
         sys.exit(1)
-    fname = sys.argv[2]
-    parametr = sys.argv[1]
+    fname = array[2]
+    parametr = array[1]
 
     Graph1 = Graph(fname, parametr)
     N = Graph1.NumV
@@ -157,7 +69,7 @@ if __name__ == "__main__":
         if Exc[i] == R: Z.append(i)
         if Exc[i] == D: P.append(i)
 
-    if "-o" in sys.argv:
+    if "-o" in array:
         fout = open('res.txt', 'w')
         if Graph1.is_directed() == False:
             fout.write("deg = ")
