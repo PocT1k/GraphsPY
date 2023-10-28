@@ -2,6 +2,7 @@ import sys
 from gr import *
 from ut import *
 
+#-e list_of_edges_t1_001.txt
 if __name__ == "__main__":
     input_string = input("Введите данные: ")
     array = input_string.split()
