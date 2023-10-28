@@ -1,66 +1,54 @@
 import sys
-from gr import *
+
 from ut import *
+from mp import *
 
 
-#-e list_of_edges_t7_001.txt
+#-m map_001.txt -n 9 0 -d 3 9
 if __name__ == "__main__":
-    input_string = input("Введите данные: ")
+    input_string = input("Введите данные: ") # Получаем входные данные от пользователя
     array = input_string.split()
     array.insert(0, "1")
 
-    if len(array) == 1 or ("-e" in array and "-l" in array) or ("-e" in array and "-m" in array) or \
-            ("-l" in array and "-m" in array):
-        print("Ошибка! Нужно указать один из параметров -e, -m, -l, параметр -o, для вывода в файл или параметр -h, для вывода справки. ")
+    if len(array)<6: #Если не достаочно аргументов
+        print("Ошибка! Нужно указать параметр -m, -n, -d, параметр -o, для вывода в файл или параметр -h, для вывода справки ")
         sys.exit(1)
-    if ("-d" in array and "-b" in array) or ("-d" in array and "-t" in array) or \
-            ("-b" in array and "-t" in array):
-        print("Ошибка! Нужно указать один из параметров -d, -b, -t для рассчета. ")
-    if "-h" in array:
-        spravka()
+
+    if "-h" in array:# Если есть аргумент -h, выводим справку и завершаем программу
+        help()
         sys.exit(1)
+
     fname = array[2]
     parametr = array[1]
-    Graph1 = Graph(fname, parametr)
-    N = Graph1.NumV
-    Vlist = []
-    for i in range(N):
-        m = []
-        for j in range(N):
-            if Graph1.MD[i][j] != 0:
-                l = []
-                l.append(j)
-                l.append(Graph1.MD[i][j])
-                m.append(l)
-        Vlist.append(m)
 
-    D = Djonson(Vlist, N)
-    if D == None:
-        if "-o" in array:
-            fout = open('res.txt', 'w')
-            fout.write("Graph contains negative weight cycle")
-        else:
-            print("Graph contains negative weight cycle")
-    else:
-        if "-o" in array:
-            fout = open('res.txt', 'w')
-            if Graph1.negative_edges()==True:
-                fout.write("Graph contains edges with negative weight.\n")
-            else:
-                fout.write("Graph doesn't contain edges with negative weight.\n")
-            fout.write("Shortest paths lengths:\n")
-            for i in range(len(D)):
-                for j in range(len(D[i])):
-                    if i != j and D[i][j] != MaxNumberV:
-                        fout.write(f"{i+1} - {j+1}: {D[i][j]}\n")
-        else:
-            if Graph1.negative_edges()==True:
-                print("Graph contains edges with negative weight.")
-            else:
-                print("Graph doesn't contain edges with negative weight.")
-            print("Shortest paths lengths:")
-            for i in range(len(D)):
-                for j in range(len(D[i])):
-                    if i != j and D[i][j] != MaxNumberV:
-                        print(f"{i+1} - {j+1}: {D[i][j]}")
+    # Создаем объект карты
+    Map1 = Map(fname)
+    Ni = Map1.Ni
+    Nj = Map1.Nj
+
+    # Получаем начальные и конечные координаты из аргументов
+    Vsx = int(array[array.index("-n") + 1])
+    Vsy = int(array[array.index("-n") + 2])
+    Vex = int(array[array.index("-d") + 1])
+    Vey = int(array[array.index("-d") + 2])
+    Vs = (Vsx, Vsy)
+    Ve = (Vex, Vey)
+
+    # Выполняем поиск маршрута с разными эвристиками
+    path, total, k = astar(Map1.MD, Map1, Vs, Ve, 1, Ni, Nj) # hManhetten
+    print(path)
+    print(f"Length = {total}, % = {k}")
+
+    path, total, k = astar(Map1.MD, Map1, Vs, Ve, 2, Ni, Nj) # hChebiseva
+    print(path)
+    print(f"Length = {total}, % = {k}")
+
+    path, total, k = astar(Map1.MD, Map1, Vs, Ve, 3, Ni, Nj) # hEvklida
+    print(path)
+    print(f"Length = {total}, % = {k}")
+
+    path, total, k = astar(Map1.MD, Map1, Vs, Ve, 4, Ni, Nj) # hDeikstra
+    print(path)
+    print(f"Length = {total}, % = {k}")
+
 pass
