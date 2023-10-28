@@ -2,10 +2,7 @@ import sys
 from gr import *
 from ut import *
 
-
-#python main.py -e list_of_edges_t1_001.txt
 if __name__ == "__main__":
-    # Ввод строки с клавиатуры
     input_string = input("Введите данные: ")
     array = input_string.split()
     array.insert(0, "1")
@@ -22,103 +19,99 @@ if __name__ == "__main__":
 
     Graph1 = Graph(fname, parametr)
     N = Graph1.NumV
-    MDist = [0] * N
+    Vlist = []
     for i in range(N):
-        MDist[i] = Graph1.MD[i]
-
-    for i in range(N):
+        l = []
         for j in range(N):
-            if MDist[i][j] == 0:
-                if i != j:
-                    MDist[i][j] = MaxNumberV
-
-    """Посчитать степени вершин"""
+            if Graph1.MD[i][j] != 0:
+                l.append(j)
+        Vlist.append(l)
+    V0 = list(range(0, N))
+    V0.reverse()
     if Graph1.is_directed() == False:
-        deg = []
-        for i in range(N):
-            deg.append(sum(1 for i in MDist[i] if (i != MaxNumberV)) - 1)
-    else:
-        deg1 = [0] * N
-        deg2 = [0] * N
-        for i in range(N):
-            for j in range(N):
-                if MDist[i][j] != 0 and MDist[i][j] < MaxNumberV:
-                    deg1[i] += 1
-                    deg2[j] += 1
-
-    """Алгоритм Флойда-Уоршелла"""
-    for k in range(N):
-        for i in range(N):
-            for j in range(N):
-                if MDist[i][j] > MDist[i][k] + MDist[k][j]:
-                    MDist[i][j] = MDist[i][k] + MDist[k][j]
-
-    """Эксцентриситеты"""
-    Exc = []
-    P = []
-    Z = []
-    for i in range(N):
-        MaxV = 0
-        for j in range(N):
-            if MDist[i][j] != MaxNumberV and MDist[i][j] > MaxV:
-                MaxV = MDist[i][j]
-        Exc.append(MaxV)
-    D = max(Exc)
-    R = min(Exc)
-    for i in range(N):
-        if Exc[i] == R: Z.append(i)
-        if Exc[i] == D: P.append(i)
-
-    if "-o" in array:
-        fout = open('res.txt', 'w')
-        if Graph1.is_directed() == False:
-            fout.write("deg = ")
-            fout.write(f"{deg}")
+        KompSV = BFS(Vlist, V0)
+        if "-o" in array:
+            fout = open('res.txt', 'w')
+            if len(KompSV) == 1:
+                fout.write("Graph is connected\n")
+            else:
+                fout.write("Graph is not connected\n")
+            fout.write("The number of components: ", len(KompSV))
+            fout.write(f"{KompSV}")
         else:
-            fout.write(f"\ndeg(-) = , {deg1}")
-            fout.write(f"\ndeg(+) = , {deg2}")
-        fout.write("\nMatrix of Distences: \n")
-        for i in range(N):
-            for j in range(N):
-                if MDist[i][j] == MaxNumberV:
-                    fout.write("~ ")
-                else:
-                    fout.write(f"{MDist[i][j]:{3}}")
-            fout.write("\n")
-        fout.write("Eccentricity:\n")
-        for i in range(N):
-            fout.write(f"{Exc[i]} ")
-        fout.write(f"\n D = {D}")
-        fout.write(f"\n R = {R}")
-        fout.write("\nCentral Virtex: ")
-        for i in range(len(Z)):
-            fout.write(f"{Z[i] + 1}")
-        fout.write("\nPeriferal Virtex: ")
-        for i in range(len(P)):
-            fout.write(f"{P[i] + 1}")
+            if len(KompSV) == 1:
+                print("Graph is connected")
+            else:
+                print("Graph is not connected")
+            print("The number of components: ", len(KompSV))
+            print(KompSV)
     else:
-        if Graph1.is_directed() == False:
-            print("deg = ", deg)
-        else:
-            print("deg(-) = ", deg1)
-            print("deg(+) = ", deg2)
-        print("Matrix of Distences: ")
+        MDTR = [0] * N
+        MDST = [0] * N
+        for i in range(N):
+            MDTR[i] = [0] * N
+            MDST[i] = [0] * N
         for i in range(N):
             for j in range(N):
-                if MDist[i][j] == MaxNumberV:
-                    print("~", end=' ')
-                else:
-                    print(f'{MDist[i][j]:{3}}', end=' ')
-            print()
-        print("Eccentricity:")
+                MDTR[i][j] = Graph1.MD[j][i]
+                if Graph1.MD[i][j] != 0:
+                    MDST[i][j] = 1
+                    MDST[j][i] = 1
+        Vlistreverse = []
+        Vlistsoot = []
         for i in range(N):
-            print(Exc[i], end=' ')
-        print()
-        print(" D =", D, "\n", "R =", R)
-        print("Central Virtex: ")
-        for i in range(len(Z)):
-            print(Z[i] + 1, end=' ')
-        print()
-        print("Periferal Virtex: ")
-        for i in range(len(P)):
-            print(P[i] + 1, end=' ')
+            r = []
+            l = []
+            for j in range(N):
+                if MDTR[i][j] != 0:
+                    r.append(j)
+                if MDST[i][j] != 0:
+                    l.append(j)
+            Vlistreverse.append(r)
+            Vlistsoot.append(l)
+
+        """Поиск компонент слабой связности"""
+        KompSV = BFS(Vlistsoot, V0)
+        if "-o" in array:
+            fout = open('res.txt', 'w')
+            if len(KompSV) == 1:
+                fout.write("Graph is weakly connected\n")
+            else:
+                fout.write("The number of weakly connected components: ")
+                fout.write(f"{len(KompSV)}")
+            fout.write("\nConnected components: ")
+            fout.write(f"{KompSV}")
+        else:
+            if len(KompSV) == 1:
+                print("Graph is weakly connected")
+            else:
+                print("The number of weakly connected components: ")
+                print(f"{len(KompSV)}")
+            print("Connected components: ")
+            print(f"{KompSV}")
+
+        """Алгоритм Касараджу"""
+        KompSV, Metki = DFS(Vlist, V0)
+        i = 0
+        while True:
+            W = Metki.index(max(Metki))
+            Metki[W] = -1
+            V0[i] = W
+            i += 1
+            if i == N:
+                break
+        KompSV, Metki = DFS(Vlistreverse, V0)
+        if "-o" in array:
+            if len(KompSV) == 1:
+                fout.write("Graph is strongly connected\n")
+            else:
+                fout.write("\nThe number of strongly connected components: ")
+                fout.write(f"{len(KompSV)}")
+            fout.write("\nStrongly connected components: \n")
+            fout.write(f"{KompSV}")
+        else:
+            if len(KompSV) == 1:
+                print("Graph is strongly connected")
+            else:
+                print("The number of strongly connected components: ", len(KompSV))
+            print("Strongly connected components: ", KompSV)

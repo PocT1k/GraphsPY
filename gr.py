@@ -1,7 +1,7 @@
-class Graph: #основной класс ?рафа
+class Graph:
     def __init__(self, fname, par):
-        NumV = 0 #n
-        MD = [] #matrix
+        NumV = 0
+        MD = []
         if par == "-e":
             fin = open(fname, "r")
             Elist = []
@@ -13,7 +13,7 @@ class Graph: #основной класс ?рафа
                 if (len(line) == 2):
                     line.append(1)
                 Elist.append(line)
-                if (line[0] > NumV or line[1] > NumV):
+                if line[0] > NumV or line[1] > NumV:
                     NumV = max(line[0], line[1])
             MD = [0] * NumV
             for i in range(NumV):
@@ -36,11 +36,17 @@ class Graph: #основной класс ?рафа
             Alist = []
             while (True):
                 line = fin.readline().split()
-                line = list(map(int, line))
                 if not line:
                     break
+
+                if line == ['-']:
+                    line = []
+                else:
+                    line = list(map(int, line))
+
                 Alist.append(line)
                 NumV += 1
+
             MD = [0] * NumV
             for i in range(NumV):
                 MD[i] = [0] * NumV
